@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    </head>
+    <body>
+        <div class="wrapper">
+            
+            <aside>
+                <ul>
+                    <li><a href="/home">Server status</a></li>
+                    <li><a href="/test">File managment</a></li>
+                    <li>3</li>
+                    <li>4</li>
+                </ul>
+            </aside>
+
+            <main>
+                <div class="container">
+                    <div class="item item-1">
+                        <div class="outer">
+                            <div class="circle-progressbar" id="cpuCircle">
+                                <div class="inner">
+                                    <div>
+                                        <p class="cpu-text">CPU</p>
+                                        <p id="cpu_percent">None</p>
+                                    </div>
+                                   
+                                    <!-- <span id="cpu_percent">Waiting for answer from server...</span> -->
+                                </div>
+                            </div>
+                        </div>
+                             
+                        
+                    </div>
+                    <div class="item item-2">
+                        <p class="overbar title">Disk Usage</p>
+                        <hr>
+                        <p class="overbar main"><span id="storage_used" class="big">None</span> GB used</p>
+                        <div class="progress_bar1">
+                            <div class="progress_1" id="progress_1"></div>    
+                        </div>
+                        <p><span id="storage_percent" class="left">none</span> <span id="storage_total" class="right">none</span></p>
+                        
+                    </div>
+                    <div class="item item-3">
+                        <p class="overbar title">RAM Usage</p>
+                        <hr>
+                        <p class="overbar main"><span id="ram_used" class="big">None</span> GB used</p>
+                        <div class="progress_bar2">
+                            <div class="progress_2" id="progress_2"></div>
+                        </div>
+                        <p><span id="ram_percent" class="left">none</span><span id="ram_total" class="right">none</span></p>
+                    </div>
+                    <div class="item item-4">4</div>
+                    <div class="item item-5">5</div>
+                    <div class="item item-6">
+                        <div>
+                            <button>Restart</button>
+                            <br><br>
+                            <button>Shut down</button>
+                        </div>
+                        
+                    </div>
+                    <div class="item item-7">
+                        <div class="screenshot_field">
+                            <button class="screenshot_button" onclick="get_screenshot()">Make screenshot</button>
+                            <br><br>
+                            <div>
+                                <img id="screen" class="screenshot" src="/static/image/{{photo}}" alt="screenshot" onclick="show_modalimage()">
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+        </div>
+
+        <div id="mymodal" class="modal">
+            <span class="close" onclick="close_modalImage()">&times;</span>
+            <div class="modal-content">
+                <img id="content-image" class="responsive_image" src="" alt="">
+            </div>
+            
+           
+        </div>
+
+        <script>
+            function fetchData() {
+                fetch('/data')
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(data){
+
+                    // sending system usage 
+                    document.getElementById('cpu_percent').textContent = data.cpu_percent;
+                    document.getElementById('storage_used').textContent = data.storage_used;
+                    document.getElementById('storage_percent').textContent = data.storage_percent;
+                    document.getElementById('storage_total').textContent = data.storage_total;
+                    document.getElementById('ram_total').textContent = data.ram_total;
+                    document.getElementById('ram_percent').textContent = data.ram_percent;
+                    document.getElementById('ram_used').textContent = data.ram_used;
+
+                    // upgrading progressbars
+                    document.getElementById('progress_2').style.width = data.ram_percent;
+                    document.getElementById('progress_1').style.width = data.storage_percent;
+
+                    // upgrading donut progress bar
+                    document.getElementById('cpuCircle').style.setProperty("--progress", `${data.cpu_percent}` )
+                })
+                .catch(function(error){
+                    console.error('Error',error);
+                });
+
+            }
+
+            function get_screenshot() {
+                fetch('/screenshot')
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(screenshot){
+                    document.getElementById('screen').src = screenshot.screenshot;
+
+                    if (document.getElementById('screen').style.display = 'none'){
+                        document.getElementById('screen').style.display = 'block';
+                    }
+                })
+                .catch(function(error){
+                      console.error('Error',error);
+                });
+            }
+
+            function show_modalimage(){
+                document.getElementById('content-image').src = document.getElementById('screen').src;
+                document.getElementById('mymodal').style.display = 'flex';
+                
+            }
+
+            function close_modalImage(){
+                document.getElementById('mymodal').style.display = 'none';
+            }
+
+            fetchData();
+            setInterval(fetchData, 2500);
+
+        </script>
+
+    </body>
+
+</html>
