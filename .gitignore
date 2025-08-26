@@ -1,0 +1,9 @@
+#Using database
+my.db
+
+#Enviromental variables
+.env
+
+#Images folder
+static/image
+/__pycache__/
