@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='code.css')}}">
+</head>
+<body>
+    <div class="wrapper">
+
+        <div class="codeframe">
+            <form action="{{url_for('code')}}" method='POST' id="codeForm">
+                <h2>Enter one-time code</h2>
+                <p>Open google authenticator and enter one-time code</p>
+                <input type="text" required maxlength="2" name="digit" class="{% if auth_failed %}incorrect-input{% endif %}">
+                <input type="text" required maxlength="2" name="digit" class="{% if auth_failed %}incorrect-input{% endif %}">
+                <input type="text" required maxlength="2" name="digit" class="{% if auth_failed %}incorrect-input{% endif %}">
+                <!-- <input type="text" required maxlength="1" name="digit" class="{% if auth_failed %}incorrect-input{% endif %}">
+                <input type="text" required maxlength="1" name="digit" class="{% if auth_failed %}incorrect-input{% endif %}">
+                <input type="text" required maxlength="1" name="digit" class="{% if auth_failed %}incorrect-input{% endif %}"> -->
+                <!-- <br><br> -->
+
+                {% if error %}
+                    <p class="error">{{error}}</p>
+                {% else %}
+                    <br><br>
+                {% endif %}
+                <button type="submit" id="submitButton">Login</button>                
+
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        //catching when user press submit button
+        document.getElementById("submitButton").addEventListener("click", function(){
+            document.getElementById("codeForm").className="submitted";
+        });
+
+        // move to next input field when a previous is full
+        var container = document.getElementsByClassName('codeframe')[0];
+        container.onkeyup = function(e) {
+            var target = e.srcElement || e.target;
+            var maxLength = parseInt(target.attributes["maxLength"].value, 10);
+            var myLength = target.value.length;
+            if (myLength >= maxLength) {
+                var next = target;
+                while (next = next.nextElementSibling) {
+                    if (next == null)
+                        break;
+                    if (next.tagName.toLowerCase() == "input") {
+                        next.focus();
+                        break;
+                    }
+                }
+            }
+
+            // Move to previous field if empty and pressed backspace
+            else if (myLength == 0) {
+                var previous = target;
+                while (previous = previous.previousElementSibling) {
+                    if (previous == null)
+                        break;
+                    if (previous.tagName.toLowerCase() == "input") {
+                        previous.focus();
+                        break;
+                    }
+                }
+
+        }
+
+        }
+
+        
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='user_management.css')}}">
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <div class="main">
+
+           <div class="users_table_controls">
+            <h3>User managment</h3>
+            <input type="text" id="search_bar" onkeyup="search_by_username()" class="search_bar">
+            <button onclick="open_modal()" class="add_button">Add User</button>
+           </div>
+           
+           <!-- <div class="users_table_header">
+            <p><span class="header_id">ID</span>
+                <span class="header_username">USERNAME</span>
+                <span class="header_registration_date">REGISTRATION DATE</span>
+                <span class="right">ACTIONS</span>
+            </p>
+           </div> -->
+
+           <div class="users_data">
+            <table id="user_data">
+               
+                <tr class="header">
+                    <th>ID</th>
+                    <th>USERNAME</th>
+                    <th>REGISTRATION_DATE</th>
+                    <th>LAST LOGIN</th>
+                    <th>ACTIONS</th>
+                </tr>
+                {% for item in users %}
+                    <tr>
+                        <td class="id">{{item[0]}}</td>
+                        <td>{{item[1]}}</td>
+                        <td class="registration_date">{{item[2]}}</td>
+                        <td class="last_login">{{item[2]}}</td>
+                        <td>
+                           
+                            <button><img src="/static/icons/qr_1287507.png" class="qr_code_img" alt="qr_code"></button>
+                            <button><img src="/static/icons/edit_1160119.png" class="edit_img" alt="edit"></button>
+                            <form action="/delete-user" method="POST">
+                                <input type="hidden" value="{{item[0]}}" name="user_id">
+                                <button type="submit"><img src="/static/icons/x.png" class="delete_img" alt="delete"></button>
+                            </form> 
+                            
+                        </td>
+                            
+                    </tr>
+                {% endfor %}
+                
+            </table>
+
+            <!-- {% for item in users %}
+                <p><span class="value_id">{{item[0]}}</span>
+                    <span class="value_username">{{item[1]}}</span>
+                    <span class="value_date">{{item[2]}}</span>
+                </p>
+            {% endfor %}     -->
+
+           </div>
+        </div>
+    </div>
+
+    <div id="mymodal" class="modal">
+        <span class="close" onclick="close_modal()">&times;</span>
+        <div class="modal-content">
+            
+            <form action="{{url_for('user_management')}}" method="POST">
+                <p>Add a new user to the list</p>
+                <input type="text" required placeholder="username" class="modal-input" id="username" name="username">
+                <br><br>
+                <input type="password" required placeholder="password" class="modal-input" id="password" name="password">
+                <br><br>
+                <button type="submit" class="modal-button">Add user</button>
+            </form>
+            
+        </div>
+    </div>
+
+    <script>
+        function search_by_username(){
+            
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById('search_bar');
+            filter = input.value.toUpperCase();
+            table = document.getElementById('user_data');
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    }
+                    else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+
+        };
+        
+        function open_modal(){
+            document.getElementById('mymodal').style.display = "flex";
+        }
+
+        function close_modal(){
+            document.getElementById('mymodal').style.display= "none";
+        }
+    </script>
+
+</body>
+
+</html>
