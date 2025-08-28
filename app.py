@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request, url_for, session, j
 from config import flask_secret_key
 from system_usage import get_usage_data
 from take_screenshot import capture_image
-from sql_connection import SQLconnector 
+from sql_connection import sql_connector
 from totp_key import TOTPManager
 
 
@@ -33,7 +33,7 @@ def code():
         code = ''.join(request.form.getlist('digit'))
 
         #Get secret TOTP key for an user and send it to TOTP manager to verify one-time code and give access to the main template
-        if TOTPManager.verify_totp(SQLconnector.get_secret_key(session['username']), code):
+        if TOTPManager.verify_totp(sql_connector.get_secret_key(session['username']), code):
             session['logged_in'] = True
             return redirect(url_for('home'))
         
@@ -59,7 +59,7 @@ def login():
         submitted_password = request.form.get('password')
 
         # use class method that check that username and password are correct and send to the home page  
-        if SQLconnector.check_login(username=submitted_username, password=submitted_password):
+        if sql_connector.check_login(username=submitted_username, password=submitted_password):
             session['username'] = submitted_username
             session['password_verified'] = True
             
@@ -79,18 +79,17 @@ def user_management():
         submitted_data = request.form.to_dict()
         print(submitted_data)
         if submitted_data:
-            SQLconnector.create_new_user(password=submitted_data.get('password'), username= submitted_data.get('username'))
+            sql_connector.create_new_user(password=submitted_data.get('password'), username= submitted_data.get('username'))
             return redirect('user-management')
     
     else:
-        return render_template('user_management.html', users=SQLconnector.get_all_users())
+        return render_template('user_management.html', users=sql_connector.get_all_users())
 
 #function to delete user from the database through the user management page
 @app.route('/delete-user', methods=['POST'])
 def delete_user():
     user_id = request.form.get('user_id')
-    print(user_id)
-    SQLconnector.delete_user(user_id)
+    sql_connector.delete_user(user_id)
 
     return redirect(url_for('user_management'))
 
