@@ -63,7 +63,7 @@ class SQLconnector():
 
     def check_login(self, username, password):
         return self.perform_query(query='SELECT COUNT(username) from Users WHERE username=? AND password=?', 
-                                 values=(username, password), mode='fetchone')
+                                 values=(username, password), mode='fetchone')[0]
 
     def delete_user(self, id):
         return self.perform_query(query='DELETE FROM Users WHERE id=?', values=(id,))
