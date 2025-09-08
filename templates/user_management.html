@@ -41,11 +41,11 @@
                         <td class="last_login">{{item[2]}}</td>
                         <td>
                            
-                            <button><img src="/static/icons/qr_1287507.png" class="qr_code_img" alt="qr_code"></button>
-                            <button><img src="/static/icons/edit_1160119.png" class="edit_img" alt="edit"></button>
+                            <button class="action_button"><img src="/static/icons/qr_1287507.png" class="qr_code_img" alt="qr_code"></button>
+                            <button class="action_button"><img src="/static/icons/edit_1160119.png" class="edit_img" alt="edit"></button>
                             <form action="/delete-user" method="POST">
                                 <input type="hidden" value="{{item[0]}}" name="user_id">
-                                <button type="submit"><img src="/static/icons/x.png" class="delete_img" alt="delete"></button>
+                                <button type="submit" class="action_button"><img src="/static/icons/x.png" class="delete_img" alt="delete"></button>
                             </form> 
                             
                         </td>

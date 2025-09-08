@@ -214,19 +214,21 @@ h3 {
 .qr_code_img,
 .delete_img,
 .edit_img {
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
 }
 
-.qr_code_img:hover,
-.delete_img:hover,
-.edit_img:hover {
-    cursor: pointer;
+.action_button {
+
+    border: none;
+    background-color: transparent;
+    height: 20px;
+    width: 20px;
+    margin-right: 6px;
+    cursor: pointer; 
 }
-
-
 
 form{
     display: inline-block;
-    
+
 }
