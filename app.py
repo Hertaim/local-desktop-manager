@@ -4,6 +4,7 @@ from system_usage import get_usage_data
 from take_screenshot import capture_image
 from sql_connection import sql_connector
 from totp_key import TOTPManager
+from qrcode_generator import QRcodeManager
 
 
 app = Flask(__name__)
