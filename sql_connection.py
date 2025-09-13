@@ -60,6 +60,9 @@ class SQLconnector():
 
     def get_secret_key(self, username):
         return self.perform_query(query="SELECT otp_key from Users WHERE username=?", values=(username,), mode='fetchone')[0]
+    
+    def get_secret_key_by_id(self,id):
+        return self.perform_query(query="SELECT otp_key from Users WHERE id=?", values=(id,), mode='fetchone')[0]
 
     def check_login(self, username, password):
         return self.perform_query(query='SELECT COUNT(username) from Users WHERE username=? AND password=?', 
@@ -86,3 +89,4 @@ sql_statements = [
    
 sql_connector = SQLconnector()
 
+print(sql_connector.get_secret_key_by_id(1))
