@@ -77,10 +77,21 @@ def login():
 @app.route('/private/admin/user-management',methods=['GET','POST'])
 def user_management():
     if request.method == 'POST':
-        submitted_data = request.form.to_dict()
-        print(submitted_data)
-        if submitted_data:
-            sql_connector.create_new_user(password=submitted_data.get('password'), username= submitted_data.get('username'))
+        
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if username and password:
+            #creating a new user in the database
+            sql_connector.create_new_user(username, password)
+
+            secret_key = sql_connector.get_secret_key(username)
+            uri = TOTPManager.generate_uri(secret_key, username)
+            qr = QRcodeManager.generate_qrcode(uri)
+
+            #generating image in memory and insert it in the database
+            sql_connector.update_bytes_qrcode(qr, username)
+
             return redirect('user-management')
     
     else:

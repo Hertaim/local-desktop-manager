@@ -12,7 +12,5 @@ class QRcodeManager():
         qr.save(buf, format='PNG')
         binary_data = buf.getvalue()
 
-        return io.BytesIO(binary_data)
+        return binary_data
 
-
-print(QRcodeManager.generate_qrcode('Hi'))
