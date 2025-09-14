@@ -68,6 +68,9 @@ class SQLconnector():
         return self.perform_query(query='SELECT COUNT(username) from Users WHERE username=? AND password=?', 
                                  values=(username, password), mode='fetchone')[0]
 
+    def update_bytes_qrcode(self, binary_data, username):
+        return self.perform_query(query='UPDATE Users SET qrcode = ? WHERE username= ?', values=(binary_data, username))
+
     def delete_user(self, id):
         return self.perform_query(query='DELETE FROM Users WHERE id=?', values=(id,))
 
@@ -89,4 +92,3 @@ sql_statements = [
    
 sql_connector = SQLconnector()
 
-print(sql_connector.get_secret_key_by_id(1))
