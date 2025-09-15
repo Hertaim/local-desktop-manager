@@ -41,7 +41,7 @@
                         <td class="last_login">{{item[2]}}</td>
                         <td>
                            
-                            <button class="action_button" onclick="open_modalQrcode()"><img src="/static/icons/qr_1287507.png" class="qr_code_img" alt="qr_code"></button>
+                            <button class="action_button" onclick="open_modalQrcode(this);" data-username="{{item[1]}}"><img src="/static/icons/qr_1287507.png" class="qr_code_img" alt="qr_code"></button>
                             <button class="action_button"><img src="/static/icons/edit_1160119.png" class="edit_img" alt="edit"></button>
                             <form action="/delete-user" method="POST">
                                 <input type="hidden" value="{{item[0]}}" name="user_id">
@@ -84,7 +84,10 @@
 
     <div id="modal-qrcode" class="modal">
         <span class="close" onclick="close_modalQrcode()">&times;</span>
-        <img src="" alt="">
+        
+        <h4>SCAN QR CODE</h4>
+        <img id="qrcode" class="qrcode" src="/qrcode" alt="">
+        
     </div>
 
     <script>
@@ -118,12 +121,19 @@
             document.getElementById('mymodal').style.display= "none";
         }
 
-        function open_modalQrcode(){
-            document.getElementById('modal-qrcode').style.display = 'flex';
-        }
-
         function close_modalQrcode(){
             document.getElementById('modal-qrcode').style.display = 'none';
+        }
+
+        function open_modalQrcode(btn) {
+            const username = btn.dataset.username;
+            const img = document.querySelector('#modal-qrcode img');
+            const modalBox = document.getElementById('modal-qrcode');
+            
+            img.src = `/qrcode?username=${encodeURIComponent(username)}`;
+            modalBox.style.display = 'flex';
+            modalBox.style.flexDirection = 'column';
+            
         }
 
     </script>

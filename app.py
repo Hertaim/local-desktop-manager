@@ -1,11 +1,11 @@
-from flask import Flask, render_template, redirect, request, url_for, session, jsonify
+from flask import Flask, render_template, redirect, request, url_for, session, jsonify, send_file
 from config import flask_secret_key
 from system_usage import get_usage_data
 from take_screenshot import capture_image
 from sql_connection import sql_connector
 from totp_key import TOTPManager
 from qrcode_generator import QRcodeManager
-
+import io
 
 app = Flask(__name__)
 app.secret_key = flask_secret_key
@@ -82,6 +82,7 @@ def user_management():
         password = request.form.get('password')
 
         if username and password:
+
             #creating a new user in the database
             sql_connector.create_new_user(username, password)
 
@@ -89,7 +90,7 @@ def user_management():
             uri = TOTPManager.generate_uri(secret_key, username)
             qr = QRcodeManager.generate_qrcode(uri)
 
-            #generating image in memory and insert it in the database
+           #add qr code in the database
             sql_connector.update_bytes_qrcode(qr, username)
 
             return redirect('user-management')
@@ -120,6 +121,11 @@ def data():
 @app.route('/screenshot')
 def screenshot():
     return jsonify(capture_image())
+
+@app.route('/qrcode')
+def qrcode():
+    username = request.args.get('username')
+    return send_file(io.BytesIO(sql_connector.get_bytes_qrcode(username)),mimetype='image/png')
 
 
 if __name__ == '__main__':

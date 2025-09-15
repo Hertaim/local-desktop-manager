@@ -71,6 +71,9 @@ class SQLconnector():
     def update_bytes_qrcode(self, binary_data, username):
         return self.perform_query(query='UPDATE Users SET qrcode = ? WHERE username= ?', values=(binary_data, username))
 
+    def get_bytes_qrcode(self, username):
+        return self.perform_query(query='SELECT qrcode from Users WHERE username=?', values=(username,), mode='fetchone')[0]
+
     def delete_user(self, id):
         return self.perform_query(query='DELETE FROM Users WHERE id=?', values=(id,))
 
