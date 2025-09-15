@@ -1,10 +1,11 @@
-from flask import Flask, render_template, redirect, request, url_for, session, jsonify
+from flask import Flask, render_template, redirect, request, url_for, session, jsonify, send_file
 from config import flask_secret_key
 from system_usage import get_usage_data
 from take_screenshot import capture_image
 from sql_connection import sql_connector
 from totp_key import TOTPManager
-
+from qrcode_generator import QRcodeManager
+import io
 
 app = Flask(__name__)
 app.secret_key = flask_secret_key
@@ -76,10 +77,22 @@ def login():
 @app.route('/private/admin/user-management',methods=['GET','POST'])
 def user_management():
     if request.method == 'POST':
-        submitted_data = request.form.to_dict()
-        print(submitted_data)
-        if submitted_data:
-            sql_connector.create_new_user(password=submitted_data.get('password'), username= submitted_data.get('username'))
+        
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if username and password:
+
+            #creating a new user in the database
+            sql_connector.create_new_user(username, password)
+
+            secret_key = sql_connector.get_secret_key(username)
+            uri = TOTPManager.generate_uri(secret_key, username)
+            qr = QRcodeManager.generate_qrcode(uri)
+
+           #add qr code in the database
+            sql_connector.update_bytes_qrcode(qr, username)
+
             return redirect('user-management')
     
     else:
@@ -108,6 +121,11 @@ def data():
 @app.route('/screenshot')
 def screenshot():
     return jsonify(capture_image())
+
+@app.route('/qrcode')
+def qrcode():
+    username = request.args.get('username')
+    return send_file(io.BytesIO(sql_connector.get_bytes_qrcode(username)),mimetype='image/png')
 
 
 if __name__ == '__main__':

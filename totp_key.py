@@ -17,5 +17,9 @@ class TOTPManager():
         totp = pyotp.TOTP(secret_key)
         return totp.verify(user_code)
     
-
+    @staticmethod
+    def generate_uri(secret_key, username):
+        """Create uri for qr code"""
+        
+        return pyotp.totp.TOTP(secret_key).provisioning_uri(name=username, issuer_name='Local desktop manager')
 
