@@ -39,7 +39,7 @@ class SQLconnector():
     
     def create_users_table(self):
         return self.perform_query(query="CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY," \
-        "username text NOT NULL UNIQUE,password text NOT NULL,otp_key text NOT NULL UNIQUE,registration_date DATE NOT NULL);")
+        "username text NOT NULL UNIQUE,password text NOT NULL,otp_key text NOT NULL UNIQUE,registration_date DATE NOT NULL,last_login DATE);")
        
     def create_default_user(self):
         """Create admin user for login first time and create your own account in user managment"""
