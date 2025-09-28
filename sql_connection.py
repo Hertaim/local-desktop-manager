@@ -7,9 +7,7 @@ class SQLconnector():
 
     def __init__(self):
 
-        self. path = 'local-dekstop-manager'
         self.db_name = 'my.db'
-        self.full_path = f'{self.path}/{self.db_name}'
 
         self.create_users_table()
         self.create_default_user()
@@ -81,22 +79,8 @@ class SQLconnector():
 
     def delete_user(self, id):
         return self.perform_query(query='DELETE FROM Users WHERE id=?', values=(id,))
+ 
 
-#Temporary list that won't be needed
-sql_statements = [
-    """CREATE TABLE IF NOT EXISTS Users (
-        id INTEGER PRIMARY KEY,
-        username text NOT NULL UNIQUE,
-        password text NOT NULL,
-        otp_key text NOT NULL UNIQUE,
-        registration_date DATE NOT NULL
-    
-    );""",
-    """INSERT INTO Users (username,password,otp_key,registration_date) VALUES(?,?,?,?)
-"""
 
-]       
-
-   
 sql_connector = SQLconnector()
 
