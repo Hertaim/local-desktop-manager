@@ -53,7 +53,7 @@ class SQLconnector():
                                  values=(username, password,TOTPManager.generate_totp(),datetime.today().strftime('%Y-%m-%d %H:%M:%S')))
         
     def get_all_users(self):
-        return self.perform_query(query='SELECT id, username, registration_date from Users',mode='fetchall')
+        return self.perform_query(query='SELECT id, username, registration_date, last_login from Users',mode='fetchall')
     
     def get_the_user(self, username):
         return self.perform_query(query="SELECT username from Users WHERE username=?", values=(username,),mode='fetchone')[0]
@@ -70,6 +70,11 @@ class SQLconnector():
 
     def update_bytes_qrcode(self, binary_data, username):
         return self.perform_query(query='UPDATE Users SET qrcode = ? WHERE username= ?', values=(binary_data, username))
+    
+    def update_last_login(self, username):
+        print('I worked and updated the value')
+        return self.perform_query(query="UPDATE Users SET last_login = ? WHERE username = ?", 
+                                  values=(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), username))
 
     def get_bytes_qrcode(self, username):
         return self.perform_query(query='SELECT qrcode from Users WHERE username=?', values=(username,), mode='fetchone')[0]

@@ -36,6 +36,8 @@ def code():
         #Get secret TOTP key for an user and send it to TOTP manager to verify one-time code and give access to the main template
         if TOTPManager.verify_totp(sql_connector.get_secret_key(session['username']), code):
             session['logged_in'] = True
+            sql_connector.update_last_login(session.get('username'))
+            
             return redirect(url_for('home'))
         
         else:
