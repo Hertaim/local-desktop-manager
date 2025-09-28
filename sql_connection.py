@@ -29,7 +29,8 @@ class SQLconnector():
                 
                 elif mode == 'fetchone':
                     row = cur.fetchone()
-                    return row
+
+                    return row[0] if row else row
                 
                 else:
                     conn.commit()
@@ -56,28 +57,27 @@ class SQLconnector():
         return self.perform_query(query='SELECT id, username, registration_date, last_login from Users',mode='fetchall')
     
     def get_the_user(self, username):
-        return self.perform_query(query="SELECT username from Users WHERE username=?", values=(username,),mode='fetchone')[0]
+        return self.perform_query(query="SELECT username from Users WHERE username=?", values=(username,),mode='fetchone')
 
     def get_secret_key(self, username):
-        return self.perform_query(query="SELECT otp_key from Users WHERE username=?", values=(username,), mode='fetchone')[0]
+        return self.perform_query(query="SELECT otp_key from Users WHERE username=?", values=(username,), mode='fetchone')
     
     def get_secret_key_by_id(self,id):
-        return self.perform_query(query="SELECT otp_key from Users WHERE id=?", values=(id,), mode='fetchone')[0]
+        return self.perform_query(query="SELECT otp_key from Users WHERE id=?", values=(id,), mode='fetchone')
 
     def check_login(self, username, password):
         return self.perform_query(query='SELECT COUNT(username) from Users WHERE username=? AND password=?', 
-                                 values=(username, password), mode='fetchone')[0]
+                                 values=(username, password), mode='fetchone')
 
     def update_bytes_qrcode(self, binary_data, username):
         return self.perform_query(query='UPDATE Users SET qrcode = ? WHERE username= ?', values=(binary_data, username))
     
     def update_last_login(self, username):
-        print('I worked and updated the value')
         return self.perform_query(query="UPDATE Users SET last_login = ? WHERE username = ?", 
                                   values=(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), username))
 
     def get_bytes_qrcode(self, username):
-        return self.perform_query(query='SELECT qrcode from Users WHERE username=?', values=(username,), mode='fetchone')[0]
+        return self.perform_query(query='SELECT qrcode from Users WHERE username=?', values=(username,), mode='fetchone')
 
     def delete_user(self, id):
         return self.perform_query(query='DELETE FROM Users WHERE id=?', values=(id,))
