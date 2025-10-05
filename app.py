@@ -65,8 +65,15 @@ def login():
         if sql_connector.check_login(username=submitted_username, password=submitted_password):
             session['username'] = submitted_username
             session['password_verified'] = True
-            
-            return redirect(url_for('code'))
+
+            #login without TOTP for default user and with TOTP for others  
+            if sql_connector.get_secret_key(submitted_username) == "NO_OTP":
+                session['logged_in'] = True
+                
+                return redirect(url_for('home'))
+            else:
+                return redirect(url_for('code'))
+
         else:
             
             error = 'Incorrect password or login'
